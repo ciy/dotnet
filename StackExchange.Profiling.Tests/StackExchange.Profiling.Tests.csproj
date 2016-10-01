@@ -119,8 +119,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MiniProfilerTest.cs" />
     <Compile Include="SqlFormatterTest.cs" />
-    <Compile Include="Storage\MultiStorageProviderTests.cs" />
-    <Compile Include="Storage\TestHttpRuntimeCacheStorage.cs" />
     <Compile Include="UnitTestStopwatch.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -134,14 +132,13 @@
     <Content Include="lib\HaackHttpSimulator\ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\StackExchange.Profiling.EntityFramework\StackExchange.Profiling.EntityFramework.csproj">
-      <Project>{7F18DC76-61A2-4E7D-BA5A-FE159E789362}</Project>
-      <Name>StackExchange.Profiling.EntityFramework</Name>
-    </ProjectReference>
     <ProjectReference Include="..\StackExchange.Profiling\StackExchange.Profiling.csproj">
       <Project>{386222BD-6B6E-480F-A342-8DE1AB516E2C}</Project>
       <Name>StackExchange.Profiling</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Storage\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

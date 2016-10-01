@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Web;
 using StackExchange.Profiling.Helpers;
 using StackExchange.Profiling.SqlFormatters;
-using StackExchange.Profiling.Storage;
+//using StackExchange.Profiling.Storage;
 
 namespace StackExchange.Profiling
 {
@@ -51,16 +51,6 @@ namespace StackExchange.Profiling
                 {
                     List<string> files = new List<string>();
                     files.Add(location);
-
-                    string customUITemplatesPath = "";
-                    if (HttpContext.Current != null)
-                        customUITemplatesPath = HttpContext.Current.Server.MapPath(MiniProfiler.Settings.CustomUITemplates);
-
-                    if (System.IO.Directory.Exists(customUITemplatesPath))
-                    {
-                        files.AddRange(System.IO.Directory.EnumerateFiles(customUITemplatesPath));
-                    }
-
                     using (var sha256 = new System.Security.Cryptography.SHA256CryptoServiceProvider())
                     {
                         byte[] hash = new byte[sha256.HashSize / 8];
@@ -263,48 +253,14 @@ namespace StackExchange.Profiling
             /// no profiler will be instantiated and no results will be displayed.
             /// Default value is { "/content/", "/scripts/", "/favicon.ico" }.
             /// </summary>
-            [DefaultValue(new string[] { "/content/", "/scripts/", "/favicon.ico" })]
+            [DefaultValue(new string[] { "/static/", "/favicon.ico" })]
             public static string[] IgnoredPaths { get; set; }
-
-            /// <summary>
-            /// The path under which ALL routes are registered in, defaults to the application root.  For example, "~/myDirectory/" would yield
-            /// "/myDirectory/includes.js" rather than just "/mini-profiler-resources/includes.js"
-            /// Any setting here should be in APP RELATIVE FORM, e.g. "~/myDirectory/"
-            /// </summary>
-            [DefaultValue("~/mini-profiler-resources")]
-            public static string RouteBasePath { get; set; }
-
-            /// <summary>
-            /// The path where custom ui elements are stored.
-            /// If the custom file doesn't exist, the standard resource is used.
-            /// This setting should be in APP RELATIVE FORM, e.g. "~/App_Data/MiniProfilerUI"
-            /// </summary>
-            /// <remarks>A web server restart is required to reload new files.</remarks>
-            [DefaultValue("~/App_Data/MiniProfilerUI")]
-            public static string CustomUITemplates { get; set; }
 
             /// <summary>
             /// Maximum payload size for json responses in bytes defaults to 2097152 characters, which is equivalent to 4 MB of Unicode string data.
             /// </summary>
             [DefaultValue(2097152)]
             public static int MaxJsonResponseSize { get; set; }
-
-            /// <summary>
-            /// Understands how to save and load MiniProfilers. Used for caching between when
-            /// a profiling session ends and results can be fetched to the client, and for showing shared, full-page results.
-            /// </summary>
-            /// <remarks>
-            /// The normal profiling session life-cycle is as follows:
-            /// 1) request begins
-            /// 2) profiler is started
-            /// 3) normal page/controller/request execution
-            /// 4) profiler is stopped
-            /// 5) profiler is cached with <see cref="Storage"/>'s implementation of <see cref="StackExchange.Profiling.Storage.IStorage.Save"/>
-            /// 6) request ends
-            /// 7) page is displayed and profiling results are ajax-fetched down, pulling cached results from 
-            ///    <see cref="Storage"/>'s implementation of <see cref="StackExchange.Profiling.Storage.IStorage.Load"/>
-            /// </remarks>
-            public static Storage.IStorage Storage { get; set; }
 
             /// <summary>
             /// The formatter applied to any SQL before being set in a <see cref="CustomTiming.CommandString"/>.
@@ -338,17 +294,6 @@ namespace StackExchange.Profiling
             /// we also test for results authorize always. This must be set and return true, to enable the listing feature.
             /// </summary>
             public static Func<HttpRequest, bool> Results_List_Authorize { get; set; }
-
-            /// <summary>
-            /// Make sure we can at least store profiler results to the http runtime cache.
-            /// </summary>
-            internal static void EnsureStorageStrategy()
-            {
-                if (Storage == null)
-                {
-                    Storage = new Storage.HttpRuntimeCacheStorage(TimeSpan.FromDays(1));
-                }
-            }
 
             internal static void EnsureProfilerProvider()
             {

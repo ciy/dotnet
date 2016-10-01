@@ -25,7 +25,6 @@ namespace StackExchange.Profiling
 
         /// <summary>
         /// Stops the current MiniProfiler (if any is currently running).
-        /// <see cref="SaveProfiler"/> should be called if <paramref name="discardResults"/> is false
         /// </summary>
         /// <param name="discardResults">If true, any current results will be thrown away and nothing saved</param>
         public abstract void Stop(bool discardResults);
@@ -63,28 +62,6 @@ namespace StackExchange.Profiling
 
             profiler.IsActive = false;
             return true;
-        }
-
-        /// <summary>
-        /// Calls <see cref="MiniProfiler.Settings.EnsureStorageStrategy"/> to save the current
-        /// profiler using the current storage settings. 
-        /// If <see cref="MiniProfiler.Storage"/> is set, this will be used.
-        /// </summary>
-        protected static void SaveProfiler(MiniProfiler current)
-        {
-            // because we fetch profiler results after the page loads, we have to put them somewhere in the meantime
-            // If the current MiniProfiler object has a custom IStorage set in the Storage property, use it. Else use the Global Storage.
-            var storage = current.Storage;
-            if (storage == null)
-            {
-                MiniProfiler.Settings.EnsureStorageStrategy();
-                storage = MiniProfiler.Settings.Storage;
-            }
-            storage.Save(current);
-            if (current.HasUserViewed == false)
-            {
-                storage.SetUnviewed(current.User, current.Id);
-            }
         }
     }
 }

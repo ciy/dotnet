@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>StackExchange.Profiling</RootNamespace>
     <AssemblyName>MiniProfiler</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -23,6 +23,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\MiniProfiler.xml</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,6 +33,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\MiniProfiler.xml</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -62,9 +64,6 @@
     <Compile Include="ClientTimings.cs" />
     <Compile Include="CustomTiming.cs" />
     <Compile Include="Helpers\Compression.cs" />
-    <Compile Include="MiniProfilerHandler.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="SqlFormatters\IAdvancedSqlFormatter.cs" />
     <Compile Include="SqlFormatters\SqlFormatterExtensions.cs" />
     <Compile Include="SqlFormatters\VerboseSqlServerFormatter.cs" />
@@ -72,9 +71,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SqlTimingParameter.cs" />
-    <Compile Include="Storage\DatabaseStorageBase.cs" />
-    <Compile Include="Storage\MultiStorageProvider.cs" />
-    <Compile Include="Storage\SqlServerStorage.cs" />
     <Compile Include="Suppression.cs" />
     <Compile Include="Data\ExecuteType.cs" />
     <Compile Include="Data\IDbProfiler.cs" />
@@ -123,8 +119,6 @@
     <Compile Include="SingletonProfilerProvider.cs">
       <DependentUpon>IProfilerProvider.cs</DependentUpon>
     </Compile>
-    <Compile Include="Storage\HttpRuntimeCacheStorage.cs" />
-    <Compile Include="Storage\IStorage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlProfiler.cs" />
     <Compile Include="Timing.cs" />
@@ -137,16 +131,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="miniprofiler.snk" />
-    <EmbeddedResource Include="ui\includes.tmpl" />
-    <EmbeddedResource Include="ui\README.md" />
   </ItemGroup>
   <ItemGroup />
-  <ItemGroup>
-    <EmbeddedResource Include="ui\include.partial.html" />
-    <EmbeddedResource Include="ui\includes.css" />
-    <EmbeddedResource Include="ui\includes.js" />
-    <EmbeddedResource Include="ui\share.html" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

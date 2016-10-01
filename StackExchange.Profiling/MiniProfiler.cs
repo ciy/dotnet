@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 using System.Web;
 using System.Web.Script.Serialization;
 using StackExchange.Profiling.Helpers;
-using StackExchange.Profiling.Storage;
+//using StackExchange.Profiling.Storage;
 
 namespace StackExchange.Profiling
 {
@@ -196,17 +196,6 @@ namespace StackExchange.Profiling
         public string User { get; set; }
 
         /// <summary>
-        /// Returns true when this MiniProfiler has been viewed by the <see cref="User"/> that recorded it.
-        /// </summary>
-        /// <remarks>
-        /// Allows POSTs that result in a redirect to be profiled. <see cref="MiniProfiler.Settings.Storage"/> implementation
-        /// will keep a list of all profilers that haven't been fetched down.
-        /// </remarks>
-        [DataMember(Order = 10)]
-        [ScriptIgnore]
-        public bool HasUserViewed { get; set; }
-
-        /// <summary>
         /// Gets or sets whether or not filtering is allowed of <see cref="Timing"/> steps based on what <see cref="ProfileLevel"/> 
         /// the steps are created with.
         /// </summary>
@@ -247,13 +236,6 @@ namespace StackExchange.Profiling
                 return Settings.ProfilerProvider.GetCurrentProfiler();
             }
         }
-
-        /// <summary>
-        /// A <see cref="IStorage"/> strategy to use for the current profiler. 
-        /// If null, then the <see cref="IStorage"/> set in <see cref="MiniProfiler.Settings.Storage"/> will be used.
-        /// </summary>
-        /// <remarks>Used to set custom storage for an individual request</remarks>
-        public IStorage Storage { get; set; }
 
         /// <summary>
         /// Starts a new MiniProfiler based on the current <see cref="IProfilerProvider"/>. This new profiler can be accessed by
@@ -360,40 +342,6 @@ namespace StackExchange.Profiling
         private static JavaScriptSerializer GetJsonSerializer()
         {
             return new JavaScriptSerializer { MaxJsonLength = Settings.MaxJsonResponseSize };   
-        }
-
-        /// <summary>
-        /// Returns the <c>css</c> and <c>javascript</c> includes needed to display the MiniProfiler results UI.
-        /// </summary>
-        /// <param name="position">Which side of the page the profiler popup button should be displayed on (defaults to left)</param>
-        /// <param name="showTrivial">Whether to show trivial timings by default (defaults to false)</param>
-        /// <param name="showTimeWithChildren">Whether to show time the time with children column by default (defaults to false)</param>
-        /// <param name="maxTracesToShow">The maximum number of trace popups to show before removing the oldest (defaults to 15)</param>
-        /// <param name="showControls">when true, shows buttons to minimize and clear MiniProfiler results</param>
-        /// <param name="useExistingjQuery">
-        /// Should MiniProfiler attempt to load its own version of jQuery, or rely on a version previously loaded on the page?
-        /// </param>
-        /// <param name="samplingOnly">The sampling Only.</param>
-        /// <param name="startHidden">Should the profiler start as hidden. Default to null.</param>
-        /// <returns>Script and link elements normally; an empty string when there is no active profiling session.</returns>
-        public static IHtmlString RenderIncludes(
-            RenderPosition? position = null, 
-            bool? showTrivial = null, 
-            bool? showTimeWithChildren = null, 
-            int? maxTracesToShow = null, 
-            bool? showControls = null,
-            bool? useExistingjQuery = null, // TODO: we need to deprecate this
-            bool samplingOnly = false,      // TODO: can we remove this?
-            bool? startHidden = null)
-        {
-            return MiniProfilerHandler.RenderIncludes(
-                Current, 
-                position, 
-                showTrivial, 
-                showTimeWithChildren, 
-                maxTracesToShow, 
-                showControls, 
-                startHidden);
         }
 
         /// <summary>

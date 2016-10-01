@@ -15,11 +15,10 @@ namespace StackExchange.Profiling
     {
         /// <summary>
         /// Initialises a new instance of the <see cref="WebRequestProfilerProvider"/> class. 
-        /// Public constructor.  This also registers any UI routes needed to display results
+        /// Public constructor.
         /// </summary>
         public WebRequestProfilerProvider()
         {
-            MiniProfilerHandler.RegisterRoutes();
         }
 
 
@@ -39,11 +38,6 @@ namespace StackExchange.Profiling
             {
                 if (path.Contains((ignored ?? string.Empty).ToUpperInvariant()))
                     return null;
-            }
-
-            if (context.Request.Path.StartsWith(VirtualPathUtility.ToAbsolute(MiniProfiler.Settings.RouteBasePath), StringComparison.InvariantCultureIgnoreCase))
-            {
-                return null;
             }
 
             var result = new MiniProfiler(sessionName ?? url.OriginalString);
@@ -69,16 +63,11 @@ namespace StackExchange.Profiling
             var url = context.Request.Url;
             var path = context.Request.AppRelativeCurrentExecutionFilePath.Substring(1).ToUpperInvariant();
 
-            // don't profile /content or /scripts, either - happens in web.dev
+            // don't profile /static/ or favicon.ico - happens in web.dev
             foreach (var ignored in MiniProfiler.Settings.IgnoredPaths ?? new string[0])
             {
                 if (path.Contains((ignored ?? string.Empty).ToUpperInvariant()))
                     return null;
-            }
-
-            if (context.Request.Path.StartsWith(VirtualPathUtility.ToAbsolute(MiniProfiler.Settings.RouteBasePath), StringComparison.InvariantCultureIgnoreCase))
-            {
-                return null;
             }
 
             var result = new MiniProfiler(sessionName ?? url.OriginalString, level);
@@ -118,38 +107,7 @@ namespace StackExchange.Profiling
                 Current = null;
                 return;
             }
-
-            var request = context.Request;
-            var response = context.Response;
-
-            // set the profiler name to Controller/Action or /url
-            EnsureName(current, request);
-
-            // save the profiler
-            SaveProfiler(current);
-
-            try
-            {
-                var arrayOfIds = MiniProfiler.Settings.Storage.GetUnviewedIds(current.User);
-
-                if (arrayOfIds != null && arrayOfIds.Count > MiniProfiler.Settings.MaxUnviewedProfiles) 
-                {
-                    foreach (var id in arrayOfIds.Take(arrayOfIds.Count - MiniProfiler.Settings.MaxUnviewedProfiles)) 
-                    {
-                        MiniProfiler.Settings.Storage.SetViewed(current.User, id);
-                    }
-                }
-
-                // allow profiling of ajax requests
-                if (arrayOfIds != null && arrayOfIds.Count > 0)
-                {
-                    response.AppendHeader("X-MiniProfiler-Ids", arrayOfIds.ToJson());
-                }
-            }
-            catch
-            {
-            } // headers blew up
-        }
+		}
 
         /// <summary>
         /// Makes sure 'profiler' has a Name, pulling it from route data or url.
